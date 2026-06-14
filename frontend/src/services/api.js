@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Set VITE_API_URL in a .env file at the frontend root, e.g.:
 //   VITE_API_URL=http://localhost:8080/api
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const baseURL = 'https://fintech-dashboard-backend-ibja.onrender.com/api';
 
 const api = axios.create({ baseURL });
 

@@ -39,7 +39,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ---- Start server ----
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 
 const start = async () => {
   await connectDB();

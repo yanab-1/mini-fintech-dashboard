@@ -1,14 +1,18 @@
 import axios from 'axios';
 
-// Set VITE_API_URL in a .env file at the frontend root, e.g.:
-//   VITE_API_URL=http://localhost:8080/api
-const baseURL = 'https://fintech-dashboard-backend-ibja.onrender.com/api';
+const baseURL =
+  import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
-const api = axios.create({ baseURL });
+const api = axios.create({
+  baseURL,
+});
 
-// Strip empty/undefined values so query strings stay clean
 const cleanParams = (params = {}) =>
-  Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value !== undefined && value !== null));
+  Object.fromEntries(
+    Object.entries(params).filter(
+      ([, value]) => value !== '' && value !== undefined && value !== null
+    )
+  );
 
 export const getTransactions = async (filters = {}) => {
   const { data } = await api.get('/transactions', { params: cleanParams(filters) });
@@ -31,12 +35,16 @@ export const deleteTransaction = async (id) => {
 };
 
 export const getSummary = async (filters = {}) => {
-  const { data } = await api.get('/transactions/summary', { params: cleanParams(filters) });
+  const { data } = await api.get('/transactions/summary', {
+    params: cleanParams(filters),
+  });
   return data.data;
 };
 
 export const getInsight = async (filters = {}) => {
-  const { data } = await api.get('/transactions/insight', { params: cleanParams(filters) });
+  const { data } = await api.get('/transactions/insight', {
+    params: cleanParams(filters),
+  });
   return data.data;
 };
 

@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 
@@ -9,25 +8,35 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-// ---- Middleware ----
 app.use(express.json());
 
-const allowedOrigins = (process.env.CLIENT_URL || '*')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: [
-      "https://mini-fintech-dashboard-iota.vercel.app",
-      "http://localhost:5173"
-    ],
-    credentials: true
+    origin(origin, callback) {
+      // Allow server-to-server / Postman requests
+      if (!origin) return callback(null, true);
+
+      // Allow exact matches and Vercel preview domains
+      if (
+        allowedOrigins.includes(origin) ||
+        /\.vercel\.app$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
   })
 );
 
-// ---- Routes ----
+app.options('*', cors());
+
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -38,12 +47,10 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/transactions', transactionRoutes);
 
-// ---- Error handling (must come after routes) ----
 app.use(notFound);
 app.use(errorHandler);
 
-// ---- Start server ----
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 const start = async () => {
   await connectDB();

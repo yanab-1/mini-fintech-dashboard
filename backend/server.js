@@ -17,11 +17,7 @@ const allowedOrigins = (process.env.CLIENT_URL || '*')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-app.use(
-  cors({
-    origin: allowedOrigins.includes('*') ? '*' : allowedOrigins,
-  })
-);
+app.use(cors());
 
 // ---- Routes ----
 app.get('/api/health', (req, res) => {

@@ -17,7 +17,15 @@ const allowedOrigins = (process.env.CLIENT_URL || '*')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://mini-fintech-dashboard-iota.vercel.app",
+      "http://localhost:5173"
+    ],
+    credentials: true
+  })
+);
 
 // ---- Routes ----
 app.get('/api/health', (req, res) => {
